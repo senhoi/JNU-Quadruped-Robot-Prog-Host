@@ -36,7 +36,7 @@ Matrix_t InvKineCalc(uint8_t leg_index, float pos_x, float pos_y, float pos_z)
 
 		theta2 = PI + acos((sRobot_MechanicalPara.Leg_a1 * sqrt(2 * sRobot_MechanicalPara.Leg_d1 * pos_z + sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * cos(theta3) * cos(theta3) + sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * sin(theta3) * sin(theta3) + sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a1 - sRobot_MechanicalPara.Leg_d1 * sRobot_MechanicalPara.Leg_d1 - pos_z * pos_z + 2 * sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a2 * cos(theta3)) + sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_d1 * sin(theta3) - sRobot_MechanicalPara.Leg_a2 * pos_z * sin(theta3) + sRobot_MechanicalPara.Leg_a2 * cos(theta3) * sqrt(2 * sRobot_MechanicalPara.Leg_d1 * pos_z + sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * cos(theta3) * cos(theta3) + sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * sin(theta3) * sin(theta3) + sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a1 - sRobot_MechanicalPara.Leg_d1 * sRobot_MechanicalPara.Leg_d1 - pos_z * pos_z + 2 * sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a2 * cos(theta3))) / (sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * cos(theta3) * cos(theta3) + sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * sin(theta3) * sin(theta3) + sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a1 + 2 * sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a2 * cos(theta3)));
 
-#ifndef __SERVO_ROBOT
+#ifndef __RPI
 		*(pJointAngle + 0) = theta1 - PI / 2;
 		*(pJointAngle + 1) = -theta2 + PI * 3 / 2;
 		*(pJointAngle + 2) = theta3 + PI / 2;
@@ -73,7 +73,7 @@ Matrix_t InvKineCalc(uint8_t leg_index, float pos_x, float pos_y, float pos_z)
 			break;
 		}
 
-#ifndef __SERVO_ROBOT
+#ifndef __RPI
 		*(pJointAngle + 0) = theta1 - PI / 2;
 		*(pJointAngle + 1) = -theta2 + PI / 2;
 		*(pJointAngle + 2) = theta3 - PI / 2;
@@ -95,7 +95,7 @@ Matrix_t InvKineCalc(uint8_t leg_index, float pos_x, float pos_y, float pos_z)
 
 		theta2 = PI - acos((sRobot_MechanicalPara.Leg_a1 * sqrt(2 * sRobot_MechanicalPara.Leg_d1 * pos_z + sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * cos(theta3) * cos(theta3) + sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * sin(theta3) * sin(theta3) + sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a1 - sRobot_MechanicalPara.Leg_d1 * sRobot_MechanicalPara.Leg_d1 - pos_z * pos_z + 2 * sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a2 * cos(theta3)) - sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_d1 * sin(theta3) + sRobot_MechanicalPara.Leg_a2 * pos_z * sin(theta3) + sRobot_MechanicalPara.Leg_a2 * cos(theta3) * sqrt(2 * sRobot_MechanicalPara.Leg_d1 * pos_z + sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * cos(theta3) * cos(theta3) + sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * sin(theta3) * sin(theta3) + sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a1 - sRobot_MechanicalPara.Leg_d1 * sRobot_MechanicalPara.Leg_d1 - pos_z * pos_z + 2 * sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a2 * cos(theta3))) / (sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * cos(theta3) * cos(theta3) + sRobot_MechanicalPara.Leg_a2 * sRobot_MechanicalPara.Leg_a2 * sin(theta3) * sin(theta3) + sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a1 + 2 * sRobot_MechanicalPara.Leg_a1 * sRobot_MechanicalPara.Leg_a2 * cos(theta3)));
 
-#ifndef __SERVO_ROBOT
+#ifndef __RPI
 		*(pJointAngle + 0) = theta1 + PI / 2;
 		*(pJointAngle + 1) = -theta2 + PI / 2;
 		*(pJointAngle + 2) = theta3 - PI / 2;
@@ -132,7 +132,7 @@ Matrix_t InvKineCalc(uint8_t leg_index, float pos_x, float pos_y, float pos_z)
 			break;
 		}
 
-#ifndef __SERVO_ROBOT
+#ifndef __RPI
 		*(pJointAngle + 0) = theta1 + PI / 2;
 		*(pJointAngle + 1) = -theta2 + PI * 3 / 2;
 		*(pJointAngle + 2) = theta3 + PI / 2;
@@ -145,7 +145,7 @@ Matrix_t InvKineCalc(uint8_t leg_index, float pos_x, float pos_y, float pos_z)
 		break;
 	}
 
-#ifdef __SERVO_ROBOT
+#ifdef __RPI
 	ReviseJointAngle(pJointAngle, leg_index);
 #endif
 

@@ -1,5 +1,5 @@
 #include "main.h"
-#ifdef __SERVO_ROBOT
+#ifdef __RPI
 #include <wiringPi.h>
 #endif
 
@@ -28,25 +28,35 @@ int main(int argc, char *argv[])
 
 	if (argc == 2)
 	{
-		if (!strcmp((const char *)argv, "--servo"))
+		if (!strcmp((const char *)argv[1], "--servo"))
+		{
 			sRobot_MotionPara.Structure = ELBOW_KNEE;
-		else if (!strcmp((const char *)argv, "--actr"))
+			PRINTF_TIPS("Structure: ELBOW_KNEE");
+		}
+		else if (!strcmp((const char *)argv[1], "--actr"))
+		{
 			sRobot_MotionPara.Structure = ELBOW_ELBOW;
+			PRINTF_TIPS("Structure: ELBOW_ELBOW");
+		}
 		else
-			PRINTF_TIPS("Wrong parameters, please input 'servo' or 'actr'\n");
+		{
+			PRINTF_TIPS("Wrong parameters, please input 'servo' or 'actr'");
+			PRINTF_TIPS("Press ENTER to continue in 'actr' mode.");
+			getchar();
+		}
 	}
 	else if (argc == 1)
 	{
-		PRINTF_TIPS("Too few parameters, please input 'servo' or 'actr'\n");
+		PRINTF_TIPS("Too few parameters, please input 'servo' or 'actr'");
 	}
 	else
 	{
-		PRINTF_TIPS("Too many parameters, please input 'servo' or 'actr'\n");
+		PRINTF_TIPS("Too many parameters, please input 'servo' or 'actr'");
 	}
 
 	InitTask();
 
-#ifdef __SERVO_ROBOT
+#ifdef __RPI
 	wiringPiSetup();
 	wiringPiISR(1, INT_EDGE_FALLING, &handle_IRQ);
 #endif
@@ -55,7 +65,7 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
-#ifndef __SERVO_ROBOT
+#ifndef __RPI
 		time_begin_us = sys_timer_us();
 		handle_IRQ();
 		time_end_us = sys_timer_us();
