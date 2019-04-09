@@ -283,8 +283,10 @@ void serialSendFloatArr(int fd, int arr_len, float *arr, int end_symbol)
 		for (int k = 0; k < 4; k++)
 		{
 			buff[k] = temp.u8[3 - k];
+			printf("%x \t", buff[k]);
 		}
 		serialSendByteArr(fd, 4, buff, 0);
+		printf("\n");
 	}
 	if (end_symbol)
 	{

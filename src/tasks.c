@@ -101,7 +101,7 @@ void InterruptTask(void)
 	}
 	free(sFootEndingPos.pMatrix);
 
-	serialSendFloatArr(fd_serialport, 12, JointAngle, 0);
+	serialSendFloatArr(fd_serialport, 12, JointAngle, 1);
 }
 
 void DisplayTask(void)

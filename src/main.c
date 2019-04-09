@@ -28,9 +28,9 @@ int main(int argc, char *argv[])
 
 	if (argc == 2)
 	{
-		if (strcmp((const char *)argv, "--servo"))
+		if (!strcmp((const char *)argv, "--servo"))
 			sRobot_MotionPara.Structure = ELBOW_KNEE;
-		else if (strcmp((const char *)argv, "--actr"))
+		else if (!strcmp((const char *)argv, "--actr"))
 			sRobot_MotionPara.Structure = ELBOW_ELBOW;
 		else
 			PRINTF_TIPS("Wrong parameters, please input 'servo' or 'actr'\n");
