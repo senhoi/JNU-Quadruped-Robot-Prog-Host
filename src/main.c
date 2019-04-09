@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 	uint64_t time_begin_us, time_end_us;
 	int64_t time_diff_us;
 
-	if (argc == 1)
+	if (argc == 2)
 	{
 		if (strcmp((const char *)argv, "--servo"))
 			sRobot_MotionPara.Structure = ELBOW_KNEE;
@@ -34,6 +34,10 @@ int main(int argc, char *argv[])
 			sRobot_MotionPara.Structure = ELBOW_ELBOW;
 		else
 			PRINTF_TIPS("Wrong parameters, please input 'servo' or 'actr'\n");
+	}
+	else if (argc == 1)
+	{
+		PRINTF_TIPS("Too few parameters, please input 'servo' or 'actr'\n");
 	}
 	else
 	{
