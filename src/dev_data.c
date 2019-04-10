@@ -11,7 +11,7 @@ void AnalysisRemoteData(serial_frame_t *pFrame)
 	RemoteData.Joystick_LY = (int8_t)pFrame->pdata[1];
 	RemoteData.Joystick_RX = (int8_t)pFrame->pdata[2];
 	RemoteData.Joystick_RY = (int8_t)pFrame->pdata[3];
-	RemoteData.Gait = pFrame->pdata[4] - 1;
+	RemoteData.Gait = pFrame->pdata[4];
 	RemoteData.Coordinate = pFrame->pdata[5];
 	RemoteData.Dial = pFrame->pdata[6];
 }

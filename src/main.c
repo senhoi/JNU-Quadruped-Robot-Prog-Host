@@ -3,7 +3,7 @@
 #include <wiringPi.h>
 #endif
 
-#define CALC_CYCLE_US 10000
+#define CALC_CYCLE_US 20000
 
 extern int usleep(__useconds_t __useconds);
 

@@ -45,7 +45,7 @@ void InitTask(void)
 		PRINTF_TIPS("SerialPort initialized successfully. fd:%d", fd_serialport);
 	}
 
-	//serialTest(fd_serialport, FRAME_HEAD);
+//	serialTest(fd_serialport, FRAME_HEAD);
 
 	Init_AllPara(GAIT_TROT);
 	SCurveCtrlInit();
@@ -90,7 +90,6 @@ void InterruptTask(void)
 	}
 
 	MatrixDisplay(sFootEndingPos);
-
 	for (int i = 0; i < 4; i++)
 	{
 		buffer = InvKineCalc(i, sFootEndingPos.pMatrix[i * 3 + 0], sFootEndingPos.pMatrix[i * 3 + 1], sFootEndingPos.pMatrix[i * 3 + 2]);
@@ -106,7 +105,7 @@ void InterruptTask(void)
 
 void DisplayTask(void)
 {
-	//DispRemoteData();
+	DispRemoteData();
 }
 
 void RevTask(void)

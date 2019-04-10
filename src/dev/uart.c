@@ -283,10 +283,10 @@ void serialSendFloatArr(int fd, int arr_len, float *arr, int end_symbol)
 		for (int k = 0; k < 4; k++)
 		{
 			buff[k] = temp.u8[3 - k];
-			printf("%x \t", buff[k]);
+			//printf("%x \t", buff[k]);
 		}
 		serialSendByteArr(fd, 4, buff, 0);
-		printf("\n");
+		//printf("\n");
 	}
 	if (end_symbol)
 	{
@@ -315,6 +315,7 @@ int serialRevFrame(serial_frame_t *pFrame, int fd, uint32_t frame_head)
 		temp_head.u8[0] = serialGetchar(fd);
 		for (int i = 0; i < 32; i++)
 		{
+			printf("%x\n",temp_head.u32);
 			if (temp_head.u32 == frame_head) //receive the start byte, set start flag
 			{
 				uint8_t counter = 0;
@@ -327,6 +328,7 @@ int serialRevFrame(serial_frame_t *pFrame, int fd, uint32_t frame_head)
 					if (counter == (rev.num - 1))
 					{
 						*pFrame = rev;
+						serialFlush(fd);
 						return 0;
 					}
 					counter++;
@@ -340,6 +342,7 @@ int serialRevFrame(serial_frame_t *pFrame, int fd, uint32_t frame_head)
 				temp_head.u8[0] = serialGetchar(fd);
 			}
 		}
+		serialFlush(fd);
 		return -1;
 	}
 	else
