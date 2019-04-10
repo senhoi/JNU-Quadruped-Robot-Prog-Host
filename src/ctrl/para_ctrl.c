@@ -391,9 +391,8 @@ void ParaUpdate(int mode)
 	{
 		if (sRobot_MotionPara.Gait != RemoteData.Gait)
 		{
-			DEBUG("GAIT:%d,%d", sRobot_MotionPara.Gait, RemoteData.Gait);
-			//sRobot_MotionPara.Gait = RemoteData.Gait;
-			//Init_AllPara(RemoteData.Gait);
+			sRobot_MotionPara.Gait = RemoteData.Gait;
+			Init_AllPara(RemoteData.Gait);
 		}
 		switch (RemoteData.Gait)
 		{
