@@ -10,6 +10,9 @@ Matrix_t sFootEndingPos;
 float JointAngle[12];
 
 int fd_serialport;
+FILE *fd_log;
+
+char LogFileName[128];
 
 enum DevType_t
 {
@@ -17,8 +20,48 @@ enum DevType_t
 	PC
 } DevType = PC;
 
+void CreateLogFile(void)
+{
+	char str_data[64];
+	char str_cwd[64];
+	time_t timer = time(NULL);
+
+	strftime(str_data, sizeof(str_data), "%Y-%m-%d[%H:%M:%S]", localtime(&timer));
+	strcat(LogFileName, str_data);
+	strcat(LogFileName, ".txt");
+	fd_log = fopen(LogFileName, "w");
+
+	if (fd_log == NULL)
+	{
+		printf("Failed to create log file.\n");
+	}
+	else
+	{
+		LOG("%s", LogFileName);
+	}
+}
+
+void ProgStop(int signo)
+{
+	printf("\nProgram aborted.\n");
+	serialClose(fd_serialport);
+	if (!fclose(fd_log))
+	{
+		printf("Log file saved. Filename is %s.\n", LogFileName);
+	}
+	else
+	{
+		printf("Failed to closed log file. \n");
+	}
+
+	_exit(0);
+}
+
 void InitTask(void)
 {
+	signal(SIGINT, ProgStop);
+	CreateLogFile();
+
 	if (setProgPri(100) != 0)
 		PRINTF_WARNING("Set priority unsuccessfully.\n");
 
@@ -130,6 +173,6 @@ void RevTask(void)
 
 void LowPriorityTask(void)
 {
-	DisplayTask();
+	//DisplayTask();
 	RevTask();
 }
