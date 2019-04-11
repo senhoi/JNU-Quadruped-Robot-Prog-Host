@@ -75,12 +75,12 @@ void Init_MechanicalPara(void)
 {
 #ifndef __SERVO_ROBOT
 	sRobot_MechanicalPara.BodyLength = 600;
-	sRobot_MechanicalPara.BodyWidth = 300;
+	sRobot_MechanicalPara.BodyWidth = 250;
 	sRobot_MechanicalPara.BodyHeight = 500;
 	sRobot_MechanicalPara.Leg_a1 = 350;
 	sRobot_MechanicalPara.Leg_a2 = 350;
 	sRobot_MechanicalPara.Leg_d1 = 0;
-	sRobot_MechanicalPara.Leg_d2 = 70;
+	sRobot_MechanicalPara.Leg_d2 = 71;
 	sRobot_MechanicalPara.Leg_d3 = 0;
 
 #else

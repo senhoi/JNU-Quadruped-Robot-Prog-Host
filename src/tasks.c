@@ -1,6 +1,6 @@
 #include "tasks.h"
 
-#define FRAME_HEAD 0xAA55AA55
+#define FRAME_HEAD 0x55AA
 #define FRAMETYPE_REMOTE 0x11
 #define FRAMETYPE_CAMERA 0x21
 #define FRAMETYPE_GYROSCOPE 0x22
@@ -100,6 +100,7 @@ void InterruptTask(void)
 	}
 	free(sFootEndingPos.pMatrix);
 
+	serialSendFrameHead(fd_serialport, FRAME_HEAD);
 	serialSendFloatArr(fd_serialport, 12, JointAngle, 1);
 }
 

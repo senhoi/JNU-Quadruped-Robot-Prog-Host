@@ -46,7 +46,8 @@ extern int serialGetchar(const int fd);
 
 extern void serialSendByteArr(int fd, int arr_len, uint8_t *arr, int end_symbol);
 extern void serialSendFloatArr(int fd, int arr_len, float *arr, int end_symbol);
-extern int serialRevFrame(serial_frame_t *pFrame, int fd, uint32_t frame_head);
-extern void serialTest(int fd, uint32_t frame_head);
+extern int serialRevFrame(serial_frame_t *pFrame, int fd, uint16_t frame_head);
+extern void serialSendFrameHead(int fd, uint16_t frame_head);
+extern void serialTest(int fd, uint16_t frame_head);
 
 #endif

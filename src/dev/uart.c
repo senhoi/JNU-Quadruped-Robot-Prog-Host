@@ -260,8 +260,8 @@ void serialSendByteArr(int fd, int arr_len, uint8_t *arr, int end_symbol)
 	}
 	if (end_symbol)
 	{
-		serialPutchar(fd, '\r');
-		serialPutchar(fd, '\n');
+		serialPutchar(fd, 0xAA);
+		serialPutchar(fd, 0x55);
 	}
 }
 
@@ -290,8 +290,8 @@ void serialSendFloatArr(int fd, int arr_len, float *arr, int end_symbol)
 	}
 	if (end_symbol)
 	{
-		serialPutchar(fd, '\r');
-		serialPutchar(fd, '\n');
+		serialPutchar(fd, 0xAA);
+		serialPutchar(fd, 0x55);
 	}
 }
 
@@ -302,21 +302,19 @@ void serialSendFloatArr(int fd, int arr_len, float *arr, int end_symbol)
  * 			frame_head: defined by user, to judge the head of a frame
  * @retval	
  */
-int serialRevFrame(serial_frame_t *pFrame, int fd, uint32_t frame_head)
+int serialRevFrame(serial_frame_t *pFrame, int fd, uint16_t frame_head)
 {
-	uint32_uint8_t temp_head;
+	uint16_uint8_t temp_head;
 	serial_frame_t rev;
 
 	if ((serialDataAvail(fd)) > 0)
 	{
-		temp_head.u8[3] = serialGetchar(fd);
-		temp_head.u8[2] = serialGetchar(fd);
 		temp_head.u8[1] = serialGetchar(fd);
 		temp_head.u8[0] = serialGetchar(fd);
 		for (int i = 0; i < 32; i++)
 		{
-			printf("%x\n",temp_head.u32);
-			if (temp_head.u32 == frame_head) //receive the start byte, set start flag
+			//printf("%x\n",temp_head.u16);
+			if (temp_head.u16 == frame_head) //receive the start byte, set start flag
 			{
 				uint8_t counter = 0;
 				rev.type = serialGetchar(fd);
@@ -336,8 +334,6 @@ int serialRevFrame(serial_frame_t *pFrame, int fd, uint32_t frame_head)
 			}
 			else
 			{
-				temp_head.u8[3] = temp_head.u8[2];
-				temp_head.u8[2] = temp_head.u8[1];
 				temp_head.u8[1] = temp_head.u8[0];
 				temp_head.u8[0] = serialGetchar(fd);
 			}
@@ -352,12 +348,26 @@ int serialRevFrame(serial_frame_t *pFrame, int fd, uint32_t frame_head)
 }
 
 /**
- * @brief	display all frame
+ * @brief	send the head of a frame
  * @para	fd:	file descriptor
- * 			frame_head: defined by user, to judge the head of a frame
+ * 		frame_head: defined by user, to judge the head of a frame
  * @retval	
  */
-void serialTest(int fd, uint32_t frame_head)
+void serialSendFrameHead(int fd, uint16_t frame_head)
+{
+	uint32_uint8_t temp_head;
+	temp_head.u32 = frame_head;
+	serialPutchar(fd, temp_head.u8[1]);
+	serialPutchar(fd, temp_head.u8[0]);
+}
+
+/**
+ * @brief	display all frame
+ * @para	fd:	file descriptor
+ * 		frame_head: defined by user, to judge the head of a frame
+ * @retval	
+ */
+void serialTest(int fd, uint16_t frame_head)
 {
 	int i = 0, j = 0;
 	int rev;
