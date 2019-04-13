@@ -366,18 +366,24 @@ int SCurveSpdCtrl_Calc(SCurveSpdCtrl_t *pSCurveSpdCtrl)
 
 	if (pSCurveSpdCtrl->Spd - pSCurveSpdCtrl->TargetSpd < -0.01f)
 	{
-		pSCurveSpdCtrl->Spd += pSCurveSpdCtrl->Acc * pSCurveSpdCtrl->TimeInc;
+		if (pSCurveSpdCtrl->Spd + pSCurveSpdCtrl->Acc * pSCurveSpdCtrl->TimeInc <= pSCurveSpdCtrl->TargetSpd)
+			pSCurveSpdCtrl->Spd += pSCurveSpdCtrl->Acc * pSCurveSpdCtrl->TimeInc;
+		else
+			return 1;
 		pSCurveSpdCtrl->SpdOutput = pSCurveSpdCtrl->Spd;
 	}
 	else if (pSCurveSpdCtrl->Spd - pSCurveSpdCtrl->TargetSpd > 0.01f)
 	{
-		pSCurveSpdCtrl->Spd -= pSCurveSpdCtrl->Dec * pSCurveSpdCtrl->TimeInc;
+		if (pSCurveSpdCtrl->Spd - pSCurveSpdCtrl->Dec * pSCurveSpdCtrl->TimeInc >= pSCurveSpdCtrl->TargetSpd)
+			pSCurveSpdCtrl->Spd -= pSCurveSpdCtrl->Dec * pSCurveSpdCtrl->TimeInc;
+		else
+			return 1;
 		pSCurveSpdCtrl->SpdOutput = pSCurveSpdCtrl->Spd;
 	}
 	else
 	{
-		return 2;
+		return 1;
 	}
 
-	return 1;
+	return 2;
 }

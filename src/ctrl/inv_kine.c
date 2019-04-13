@@ -39,7 +39,7 @@ Matrix_t InvKineCalc(uint8_t leg_index, float pos_x, float pos_y, float pos_z)
 		LOG("LF:%.3f %.3f %.3f", theta1, theta2, theta3);
 #ifndef __RPI
 		*(pJointAngle + 0) = theta1 - PI / 2;
-		*(pJointAngle + 1) = -theta2 + PI * 3 / 2;
+		*(pJointAngle + 1) = -theta2 + PI;
 		*(pJointAngle + 2) = theta3 + PI / 2;
 #else
 		*(pJointAngle + 0) = theta1 - PI / 2;
@@ -77,7 +77,7 @@ Matrix_t InvKineCalc(uint8_t leg_index, float pos_x, float pos_y, float pos_z)
 		LOG("RB:%.3f %.3f %.3f", theta1, theta2, theta3);
 #ifndef __RPI
 		*(pJointAngle + 0) = theta1 - PI / 2;
-		*(pJointAngle + 1) = -theta2 + PI / 2;
+		*(pJointAngle + 1) = -theta2 + PI;
 		*(pJointAngle + 2) = theta3 - PI / 2;
 #else
 		*(pJointAngle + 0) = theta1 - PI / 2;
@@ -100,7 +100,7 @@ Matrix_t InvKineCalc(uint8_t leg_index, float pos_x, float pos_y, float pos_z)
 		LOG("RF:%.3f %.3f %.3f", theta1, theta2, theta3);
 #ifndef __RPI
 		*(pJointAngle + 0) = theta1 + PI / 2;
-		*(pJointAngle + 1) = -theta2 + PI / 2;
+		*(pJointAngle + 1) = -theta2 + PI;
 		*(pJointAngle + 2) = theta3 - PI / 2;
 #else
 		*(pJointAngle + 0) = theta1 + PI / 2;
@@ -138,7 +138,7 @@ Matrix_t InvKineCalc(uint8_t leg_index, float pos_x, float pos_y, float pos_z)
 		LOG("LB:%.3f %.3f %.3f", theta1, theta2, theta3);
 #ifndef __RPI
 		*(pJointAngle + 0) = theta1 + PI / 2;
-		*(pJointAngle + 1) = -theta2 + PI * 3 / 2;
+		*(pJointAngle + 1) = -theta2 + PI;
 		*(pJointAngle + 2) = theta3 + PI / 2;
 #else
 		*(pJointAngle + 0) = theta1 + PI / 2;

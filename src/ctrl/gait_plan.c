@@ -308,7 +308,6 @@ Matrix_t Calc_GaitTrajPoint_Walk(void)
 		MatrixRotation_Z = SE3_Rz(Theta_Supporting / PI * 180);
 		InverseMatrix = Inv4(Plane2Body);
 
-		//printf("Debug:Gait.c 2.0\n");
 		Zero2Supporting_Ending = SE3_T(Zero2Supporting_Ending_PosX, Zero2Supporting_Ending_PosY, Zero2Supporting_Ending_PosZ);
 		Position2Supporting_Ending.LF = MatrixMultiply(2, Position2Zero.LF, Zero2Supporting_Ending);
 		Plane2Supporting_Ending.LF = MatrixMultiply(2, Plane2Position, Position2Supporting_Ending.LF);
@@ -341,7 +340,6 @@ Matrix_t Calc_GaitTrajPoint_Walk(void)
 		MatrixRotation_Z = SE3_Rz(Theta_Swing / PI * 180);
 		InverseMatrix = Inv4(Plane2Body);
 
-		//printf("Debug:Gait.c 2.1\n");
 		Zero2Swing_Ending = SE3_T(Zero2Swing_Ending_PosX, Zero2Swing_Ending_PosY, Zero2Swing_Ending_PosZ);
 		Position2Swing_Ending.LF = MatrixMultiply(2, Position2Zero.LF, Zero2Swing_Ending);
 		Plane2Swing_Ending.LF = MatrixMultiply(2, Plane2Position, Position2Swing_Ending.LF);
@@ -376,7 +374,6 @@ Matrix_t Calc_GaitTrajPoint_Walk(void)
 		MatrixRotation_Z = SE3_Rz(Theta_Supporting / PI * 180);
 		InverseMatrix = Inv4(Plane2Body);
 
-		//printf("Debug:Gait.c 2.2\n");
 		Zero2Supporting_Ending = SE3_T(Zero2Supporting_Ending_PosX, -Zero2Supporting_Ending_PosY, -Zero2Supporting_Ending_PosZ);
 		Position2Supporting_Ending.LH = MatrixMultiply(2, Position2Zero.LH, Zero2Supporting_Ending);
 		Plane2Supporting_Ending.LH = MatrixMultiply(2, Plane2Position, Position2Supporting_Ending.LH);
@@ -385,21 +382,17 @@ Matrix_t Calc_GaitTrajPoint_Walk(void)
 		free(Position2Supporting_Ending.LH.pMatrix);
 		free(Plane2Supporting_Ending.LH.pMatrix);
 
-		//printf("Debug:Gait.c 2.2.1\n");
 		free(MatrixRotation_Z.pMatrix);
 		free(InverseMatrix.pMatrix);
 
-		//printf("Debug:Gait.c 2.2.2\n");
 		InverseMatrix = Inv4(Body2Leg.LH);
 		Leg2Supporting_Ending.LH = MatrixMultiply(2, InverseMatrix, Body2Supporting_Ending.LH);
 		free(InverseMatrix.pMatrix);
 		free(Body2Supporting_Ending.LH.pMatrix);
 
-		//printf("Debug:Gait.c 2.2.3\n");
 		*(ResultArray + 3 * 3 + 0) = *(Leg2Supporting_Ending.LH.pMatrix + 0 * 4 + 3);
 		*(ResultArray + 3 * 3 + 1) = *(Leg2Supporting_Ending.LH.pMatrix + 1 * 4 + 3);
 		*(ResultArray + 3 * 3 + 2) = *(Leg2Supporting_Ending.LH.pMatrix + 2 * 4 + 3);
-		//printf("Debug:Gait.c 2.2.4\n");
 
 		free(Leg2Supporting_Ending.LH.pMatrix);
 	}
@@ -413,7 +406,6 @@ Matrix_t Calc_GaitTrajPoint_Walk(void)
 		MatrixRotation_Z = SE3_Rz(Theta_Swing / PI * 180);
 		InverseMatrix = Inv4(Plane2Body);
 
-		//printf("Debug:Gait.c 2.3\n");
 		Zero2Swing_Ending = SE3_T(Zero2Swing_Ending_PosX, -Zero2Swing_Ending_PosY, -Zero2Swing_Ending_PosZ);
 		Position2Swing_Ending.LH = MatrixMultiply(2, Position2Zero.LH, Zero2Swing_Ending);
 		Plane2Swing_Ending.LH = MatrixMultiply(2, Plane2Position, Position2Swing_Ending.LH);
@@ -448,7 +440,6 @@ Matrix_t Calc_GaitTrajPoint_Walk(void)
 		MatrixRotation_Z = SE3_Rz(Theta_Supporting / PI * 180);
 		InverseMatrix = Inv4(Plane2Body);
 
-		//printf("Debug:Gait.c 2.4\n");
 		Zero2Supporting_Ending = SE3_T(-Zero2Supporting_Ending_PosX, Zero2Supporting_Ending_PosY, -Zero2Supporting_Ending_PosZ);
 		Position2Supporting_Ending.RH = MatrixMultiply(2, Position2Zero.RH, Zero2Supporting_Ending);
 		Plane2Supporting_Ending.RH = MatrixMultiply(2, Plane2Position, Position2Supporting_Ending.RH);
@@ -481,7 +472,6 @@ Matrix_t Calc_GaitTrajPoint_Walk(void)
 		MatrixRotation_Z = SE3_Rz(Theta_Swing / PI * 180);
 		InverseMatrix = Inv4(Plane2Body);
 
-		//printf("Debug:Gait.c 2.5\n");
 		Zero2Swing_Ending = SE3_T(-Zero2Swing_Ending_PosX, Zero2Swing_Ending_PosY, -Zero2Swing_Ending_PosZ);
 		Position2Swing_Ending.RH = MatrixMultiply(2, Position2Zero.RH, Zero2Swing_Ending);
 		Plane2Swing_Ending.RH = MatrixMultiply(2, Plane2Position, Position2Swing_Ending.RH);
@@ -516,7 +506,6 @@ Matrix_t Calc_GaitTrajPoint_Walk(void)
 		MatrixRotation_Z = SE3_Rz(Theta_Supporting / PI * 180);
 		InverseMatrix = Inv4(Plane2Body);
 
-		//printf("Debug:Gait.c 2.6\n");
 		Zero2Supporting_Ending = SE3_T(-Zero2Supporting_Ending_PosX, -Zero2Supporting_Ending_PosY, Zero2Supporting_Ending_PosZ);
 		Position2Supporting_Ending.RF = MatrixMultiply(2, Position2Zero.RF, Zero2Supporting_Ending);
 		Plane2Supporting_Ending.RF = MatrixMultiply(2, Plane2Position, Position2Supporting_Ending.RF);
@@ -549,7 +538,6 @@ Matrix_t Calc_GaitTrajPoint_Walk(void)
 		MatrixRotation_Z = SE3_Rz(Theta_Swing / PI * 180);
 		InverseMatrix = Inv4(Plane2Body);
 
-		//printf("Debug:Gait.c 2.7\n");
 		Zero2Swing_Ending = SE3_T(-Zero2Swing_Ending_PosX, -Zero2Swing_Ending_PosY, Zero2Swing_Ending_PosZ);
 		Position2Swing_Ending.RF = MatrixMultiply(2, Position2Zero.RF, Zero2Swing_Ending);
 		Plane2Swing_Ending.RF = MatrixMultiply(2, Plane2Position, Position2Swing_Ending.RF);

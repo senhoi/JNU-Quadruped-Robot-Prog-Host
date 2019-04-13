@@ -76,11 +76,11 @@ void Init_MechanicalPara(void)
 #ifndef __SERVO_ROBOT
 	sRobot_MechanicalPara.BodyLength = 600;
 	sRobot_MechanicalPara.BodyWidth = 250;
-	sRobot_MechanicalPara.BodyHeight = 500;
+	sRobot_MechanicalPara.BodyHeight = 550;
 	sRobot_MechanicalPara.Leg_a1 = 350;
-	sRobot_MechanicalPara.Leg_a2 = 350;
+	sRobot_MechanicalPara.Leg_a2 = 325;
 	sRobot_MechanicalPara.Leg_d1 = 0;
-	sRobot_MechanicalPara.Leg_d2 = 71;
+	sRobot_MechanicalPara.Leg_d2 = 0;
 	sRobot_MechanicalPara.Leg_d3 = 0;
 
 #else
@@ -101,7 +101,7 @@ void Init_BodyPosturePara(void)
 #ifndef __SERVO_ROBOT
 	sRobot_BodyPosturePara.X = 0;
 	sRobot_BodyPosturePara.Y = 0;
-	sRobot_BodyPosturePara.Z = 500;
+	sRobot_BodyPosturePara.Z = 550;
 	sRobot_BodyPosturePara.Roll = 0;
 	sRobot_BodyPosturePara.Pitch = 0;
 	sRobot_BodyPosturePara.Yaw = 0;
@@ -276,10 +276,9 @@ void Modify_Posture(void)
 	Calc_Plane2Body();
 }
 
-SCurveSpdCtrl_t sSCurveSpdCtrlSpd_X;
-SCurvePosCtrl_t sScurvePosCtrlBody_Y;
-SCurveSpdCtrl_t sSCurveSpdCtrlSpan_X;
 SCurveSpdCtrl_t sSCurveSpdCtrlSpan_Z;
+SCurveSpdCtrl_t sSCurveSpdCtrlSpan_X;
+SCurvePosCtrl_t sScurvePosCtrlBody_Y;
 
 void Modify_COG(void)
 {
@@ -290,14 +289,17 @@ void Modify_COG(void)
 		break;
 	case 2:
 		sRobot_BodyPosturePara.Y = sScurvePosCtrlBody_Y.PosOutput;
-		DEBUG("para_ctrl.c Shift Y:%f\n", sRobot_BodyPosturePara.Y);
+
 		break;
 	}
 }
 
 void SCurveCtrlInit(void)
 {
-	SCurveSpdCtrl_New(&sSCurveSpdCtrlSpd_X, 0.01, 20, 20, 400);
+	SCurveSpdCtrl_New(&sSCurveSpdCtrlSpan_Z, 0.01, 20, 20, 0);
+	sSCurveSpdCtrlSpan_Z.Flag = 1;
+	SCurveSpdCtrl_New(&sSCurveSpdCtrlSpan_X, 0.01, 20, 20, 0);
+	sSCurveSpdCtrlSpan_X.Flag = 1;
 	SCurvePosCtrl_New(&sScurvePosCtrlBody_Y, 100, 0.01, sRobot_MotionPara.Cycle * sRobot_MotionPara.DutyRatio, 30, 2000, 500, 0, 80);
 }
 
@@ -383,6 +385,8 @@ void TimeKeeping(void)
 
 		break;
 	}
+	SCurveSpdCtrl_Calc(&sSCurveSpdCtrlSpan_Z);
+	SCurveSpdCtrl_Calc(&sSCurveSpdCtrlSpan_X);
 }
 
 void ParaUpdate(int mode)
@@ -427,8 +431,10 @@ void ParaUpdate(int mode)
 			switch (RemoteData.Coordinate)
 			{
 			case UNIVERSE_XYPY:
-				sRobot_MotionPara.Span_Z = RemoteData.Joystick_LY;
-				sRobot_MotionPara.Span_X = -RemoteData.Joystick_LX;
+				SCurveCtrl_SetNewSpd(&sSCurveSpdCtrlSpan_Z, RemoteData.Joystick_LY);
+				SCurveCtrl_SetNewSpd(&sSCurveSpdCtrlSpan_X, RemoteData.Joystick_LX);
+				sRobot_MotionPara.Span_Z = sSCurveSpdCtrlSpan_Z.SpdOutput;
+				sRobot_MotionPara.Span_X = -sSCurveSpdCtrlSpan_X.SpdOutput;
 				sRobot_MotionPara.Span_W = -RemoteData.Joystick_RX / 180.0 * PI / 8;
 
 				//	sRobot_PlanePosturePara.Roll = GyroscopeData[5].fl;
@@ -458,8 +464,10 @@ void ParaUpdate(int mode)
 			switch (RemoteData.Coordinate)
 			{
 			case UNIVERSE_XYPY:
-				sRobot_MotionPara.Span_Z = RemoteData.Joystick_LY;
-				sRobot_MotionPara.Span_X = -RemoteData.Joystick_LX;
+				SCurveCtrl_SetNewSpd(&sSCurveSpdCtrlSpan_Z, RemoteData.Joystick_LY);
+				sRobot_MotionPara.Span_Z = sSCurveSpdCtrlSpan_Z.SpdOutput;
+				SCurveCtrl_SetNewSpd(&sSCurveSpdCtrlSpan_X, RemoteData.Joystick_LX);
+				sRobot_MotionPara.Span_X = -sSCurveSpdCtrlSpan_X.SpdOutput;
 				sRobot_MotionPara.Span_W = -RemoteData.Joystick_RX / 180.0 * PI / 8;
 
 				//sRobot_PlanePosturePara.Roll = GyroscopeData[5].fl;
@@ -478,13 +486,6 @@ void ParaUpdate(int mode)
 				sRobot_MotionPara.Span_Y = 0 + 150 * ((float)RemoteData.Dial / 512);
 				PRINTF_TIPS("TROTTING. Span_Y:%d\n", sRobot_MotionPara.Span_Y);
 				break;
-			}
-			if (sRobot_MotionPara.Phase_A == 0 || sRobot_MotionPara.Phase_B == 0)
-			{
-				//printf("SCurve_Z:%d\n", SCurveSpdCtrl_Calc(&sSCurveSpdCtrlSpan_Z));
-				//printf("SCurve_Z_OUTPUT:%f\n", sSCurveSpdCtrlSpan_Z.SpdOutput);
-				//printf("SCurve_X:%d\n", SCurveSpdCtrl_Calc(&sSCurveSpdCtrlSpan_X));
-				//printf("SCurve_X_OUTPUT:%f\n", sSCurveSpdCtrlSpan_X.SpdOutput);
 			}
 			break;
 		}

@@ -122,7 +122,7 @@ void InterruptTask(void)
 		sFootEndingPos = Calc_GaitTrajPoint_Trot();
 		break;
 	case GAIT_TROT:
-		//Calc_Position2Zero();
+		Calc_Position2Zero();
 		Calc_GaitTrajPolyCoeffi_Trot();
 		sFootEndingPos = Calc_GaitTrajPoint_Trot();
 		break;
