@@ -93,10 +93,10 @@ typedef struct Robot_ZeroShift_t
 
 typedef struct Robot_InitialZeroShift_t
 {
-	int LF;
-	int LH;
-	int RF;
-	int RH;
+	int LF[3]; //0-X 1-Y 2-Z （机身XYZ）
+	int LH[3];
+	int RF[3];
+	int RH[3];
 } Robot_InitialZeroShift_t;
 
 extern Robot_MotionPara_t sRobot_MotionPara;

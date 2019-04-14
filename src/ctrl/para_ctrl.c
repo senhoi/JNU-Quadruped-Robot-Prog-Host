@@ -125,10 +125,20 @@ void Init_PlanePosturePara(void)
 
 void Init_InitialZeroShift(void)
 {
-	sRobot_InitialZeroShift.LF = 0;
-	sRobot_InitialZeroShift.LH = 0;
-	sRobot_InitialZeroShift.RF = 0;
-	sRobot_InitialZeroShift.RH = 0;
+	sRobot_InitialZeroShift.LF[0] = 0;
+	sRobot_InitialZeroShift.LH[0] = 0;
+	sRobot_InitialZeroShift.RF[0] = 0;
+	sRobot_InitialZeroShift.RH[0] = 0;
+
+	sRobot_InitialZeroShift.LF[1] = 30;
+	sRobot_InitialZeroShift.LH[1] = 30;
+	sRobot_InitialZeroShift.RF[1] = 30;
+	sRobot_InitialZeroShift.RH[1] = 30;
+
+	sRobot_InitialZeroShift.LF[2] = 0;
+	sRobot_InitialZeroShift.LH[2] = 0;
+	sRobot_InitialZeroShift.RF[2] = 0;
+	sRobot_InitialZeroShift.RH[2] = 0;
 }
 
 void Init_ZeroShift(void)
@@ -204,13 +214,13 @@ void Calc_Position2Zero(void)
 {
 	Matrix_t MatrixTranslation, MatrixRotation_X, MatrixRotation_Z;
 
-	sRobot_ZeroShift.LF = sRobot_InitialZeroShift.LF - sRobot_MotionPara.Span_Z / 2 + 3.0 / 10 * sRobot_MotionPara.Span_Z;
-	sRobot_ZeroShift.RF = sRobot_InitialZeroShift.RF - sRobot_MotionPara.Span_Z / 2 + 3.0 / 10 * sRobot_MotionPara.Span_Z;
-	sRobot_ZeroShift.LH = sRobot_InitialZeroShift.LH + sRobot_MotionPara.Span_Z / 2 - 3.0 / 10 * sRobot_MotionPara.Span_Z;
-	sRobot_ZeroShift.RH = sRobot_InitialZeroShift.RH + sRobot_MotionPara.Span_Z / 2 - 3.0 / 10 * sRobot_MotionPara.Span_Z;
+	sRobot_ZeroShift.LF = sRobot_InitialZeroShift.LF[0] - sRobot_MotionPara.Span_Z / 2 + 3.0f / 10 * sRobot_MotionPara.Span_Z;
+	sRobot_ZeroShift.RF = sRobot_InitialZeroShift.RF[0] - sRobot_MotionPara.Span_Z / 2 + 3.0f / 10 * sRobot_MotionPara.Span_Z;
+	sRobot_ZeroShift.LH = sRobot_InitialZeroShift.LH[0] + sRobot_MotionPara.Span_Z / 2 - 3.0f / 10 * sRobot_MotionPara.Span_Z;
+	sRobot_ZeroShift.RH = sRobot_InitialZeroShift.RH[0] + sRobot_MotionPara.Span_Z / 2 - 3.0f / 10 * sRobot_MotionPara.Span_Z;
 
 	//Position2Zero.XX
-	MatrixTranslation = SE3_T(sRobot_ZeroShift.LF + sRobot_MechanicalPara.BodyLength / 2, sRobot_MechanicalPara.BodyWidth / 2 + sRobot_MechanicalPara.Leg_d2 + sRobot_MechanicalPara.Leg_d3, 0);
+	MatrixTranslation = SE3_T(sRobot_ZeroShift.LF + sRobot_MechanicalPara.BodyLength / 2, sRobot_MechanicalPara.BodyWidth / 2 + sRobot_MechanicalPara.Leg_d2 + sRobot_MechanicalPara.Leg_d3 + sRobot_InitialZeroShift.LF[1], sRobot_InitialZeroShift.LF[2]);
 	MatrixRotation_Z = SE3_Rz(90);
 	MatrixRotation_X = SE3_Rx(90);
 	Position2Zero.LF = MatrixMultiply(3, MatrixTranslation, MatrixRotation_Z, MatrixRotation_X);
@@ -218,7 +228,7 @@ void Calc_Position2Zero(void)
 	free(MatrixRotation_X.pMatrix);
 	free(MatrixRotation_Z.pMatrix);
 
-	MatrixTranslation = SE3_T(-(sRobot_ZeroShift.LH + sRobot_MechanicalPara.BodyLength / 2), sRobot_MechanicalPara.BodyWidth / 2 + sRobot_MechanicalPara.Leg_d2 + sRobot_MechanicalPara.Leg_d3, 0);
+	MatrixTranslation = SE3_T(-(sRobot_ZeroShift.LH + sRobot_MechanicalPara.BodyLength / 2), sRobot_MechanicalPara.BodyWidth / 2 + sRobot_MechanicalPara.Leg_d2 + sRobot_MechanicalPara.Leg_d3 + sRobot_InitialZeroShift.LH[1], sRobot_InitialZeroShift.LH[2]);
 	MatrixRotation_Z = SE3_Rz(90);
 	MatrixRotation_X = SE3_Rx(-90);
 	Position2Zero.LH = MatrixMultiply(3, MatrixTranslation, MatrixRotation_Z, MatrixRotation_X);
@@ -226,7 +236,7 @@ void Calc_Position2Zero(void)
 	free(MatrixRotation_X.pMatrix);
 	free(MatrixRotation_Z.pMatrix);
 
-	MatrixTranslation = SE3_T(sRobot_ZeroShift.RF + sRobot_MechanicalPara.BodyLength / 2, -sRobot_MechanicalPara.BodyWidth / 2 - sRobot_MechanicalPara.Leg_d2 - sRobot_MechanicalPara.Leg_d3, 0);
+	MatrixTranslation = SE3_T(sRobot_ZeroShift.RF + sRobot_MechanicalPara.BodyLength / 2, -sRobot_MechanicalPara.BodyWidth / 2 - sRobot_MechanicalPara.Leg_d2 - sRobot_MechanicalPara.Leg_d3 - sRobot_InitialZeroShift.RF[1], sRobot_InitialZeroShift.RF[2]);
 	MatrixRotation_Z = SE3_Rz(-90);
 	MatrixRotation_X = SE3_Rx(-90);
 	Position2Zero.RF = MatrixMultiply(3, MatrixTranslation, MatrixRotation_Z, MatrixRotation_X);
@@ -234,7 +244,7 @@ void Calc_Position2Zero(void)
 	free(MatrixRotation_X.pMatrix);
 	free(MatrixRotation_Z.pMatrix);
 
-	MatrixTranslation = SE3_T(-(sRobot_ZeroShift.RH + sRobot_MechanicalPara.BodyLength / 2), -sRobot_MechanicalPara.BodyWidth / 2 - sRobot_MechanicalPara.Leg_d2 - sRobot_MechanicalPara.Leg_d3, 0);
+	MatrixTranslation = SE3_T(-(sRobot_ZeroShift.RH + sRobot_MechanicalPara.BodyLength / 2), -sRobot_MechanicalPara.BodyWidth / 2 - sRobot_MechanicalPara.Leg_d2 - sRobot_MechanicalPara.Leg_d3 - sRobot_InitialZeroShift.RH[1], sRobot_InitialZeroShift.RH[2]);
 	MatrixRotation_Z = SE3_Rz(-90);
 	MatrixRotation_X = SE3_Rx(90);
 	Position2Zero.RH = MatrixMultiply(3, MatrixTranslation, MatrixRotation_Z, MatrixRotation_X);
@@ -300,7 +310,7 @@ void SCurveCtrlInit(void)
 	sSCurveSpdCtrlSpan_Z.Flag = 1;
 	SCurveSpdCtrl_New(&sSCurveSpdCtrlSpan_X, 0.01, 20, 20, 0);
 	sSCurveSpdCtrlSpan_X.Flag = 1;
-	SCurvePosCtrl_New(&sScurvePosCtrlBody_Y, 100, 0.01, sRobot_MotionPara.Cycle * sRobot_MotionPara.DutyRatio, 30, 2000, 500, 0, 80);
+	SCurvePosCtrl_New(&sScurvePosCtrlBody_Y, 100, 0.01, sRobot_MotionPara.Cycle * sRobot_MotionPara.DutyRatio, 30, 2000, 500, 0, sRobot_MotionPara.COG_Shift);
 }
 
 void TimeKeeping(void)
@@ -355,12 +365,12 @@ void TimeKeeping(void)
 			{
 				if (sRobot_MotionPara.Phase_Shift_Dir == 1) //FIXME
 				{
-					SCurvePosCtrl_SetNewPos(&sScurvePosCtrlBody_Y, sRobot_MotionPara.Cycle * (1 - 4 * (1 - sRobot_MotionPara.DutyRatio)) / 2.0f, 200, shadow_acc, -80);
+					SCurvePosCtrl_SetNewPos(&sScurvePosCtrlBody_Y, sRobot_MotionPara.Cycle * (1 - 4 * (1 - sRobot_MotionPara.DutyRatio)) / 2.0f, 200, shadow_acc, -sRobot_MotionPara.COG_Shift);
 					sRobot_MotionPara.Phase_Shift_Dir = -1;
 				}
 				else if (sRobot_MotionPara.Phase_Shift_Dir == -1)
 				{
-					SCurvePosCtrl_SetNewPos(&sScurvePosCtrlBody_Y, sRobot_MotionPara.Cycle * (1 - 4 * (1 - sRobot_MotionPara.DutyRatio)) / 2.0f, 200, shadow_acc, 80);
+					SCurvePosCtrl_SetNewPos(&sScurvePosCtrlBody_Y, sRobot_MotionPara.Cycle * (1 - 4 * (1 - sRobot_MotionPara.DutyRatio)) / 2.0f, 200, shadow_acc, sRobot_MotionPara.COG_Shift);
 					sRobot_MotionPara.Phase_Shift_Dir = 1;
 				}
 				sScurvePosCtrlBody_Y.Flag = 1;
