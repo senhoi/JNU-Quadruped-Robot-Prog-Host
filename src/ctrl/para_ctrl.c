@@ -45,7 +45,7 @@ void Init_MotionPara(int gait)
 		sRobot_MotionPara.Interval = 10;
 		sRobot_MotionPara.Span_Z = 100;
 		sRobot_MotionPara.Span_X = 0;
-		sRobot_MotionPara.Span_Y = 30;
+		sRobot_MotionPara.Span_Y = 50;
 		sRobot_MotionPara.Span_W = 0.0f;
 		break;
 
@@ -62,7 +62,7 @@ void Init_MotionPara(int gait)
 		sRobot_MotionPara.Span_X = 0;
 		sRobot_MotionPara.Span_Y = 30;
 		sRobot_MotionPara.Span_W = 0.0f;
-		sRobot_MotionPara.COG_Shift = 30;
+		sRobot_MotionPara.COG_Shift = 120;
 		Reset_WalkPhase();
 		break;
 
@@ -74,11 +74,11 @@ void Init_MotionPara(int gait)
 void Init_MechanicalPara(void)
 {
 #ifndef __SERVO_ROBOT
-	sRobot_MechanicalPara.BodyLength = 600;
+	sRobot_MechanicalPara.BodyLength = 560;
 	sRobot_MechanicalPara.BodyWidth = 250;
-	sRobot_MechanicalPara.BodyHeight = 550;
+	sRobot_MechanicalPara.BodyHeight = 480;
 	sRobot_MechanicalPara.Leg_a1 = 350;
-	sRobot_MechanicalPara.Leg_a2 = 325;
+	sRobot_MechanicalPara.Leg_a2 = 280;
 	sRobot_MechanicalPara.Leg_d1 = 0;
 	sRobot_MechanicalPara.Leg_d2 = 0;
 	sRobot_MechanicalPara.Leg_d3 = 0;
@@ -101,7 +101,7 @@ void Init_BodyPosturePara(void)
 #ifndef __SERVO_ROBOT
 	sRobot_BodyPosturePara.X = 0;
 	sRobot_BodyPosturePara.Y = 0;
-	sRobot_BodyPosturePara.Z = 550;
+	sRobot_BodyPosturePara.Z = 480;
 	sRobot_BodyPosturePara.Roll = 0;
 	sRobot_BodyPosturePara.Pitch = 0;
 	sRobot_BodyPosturePara.Yaw = 0;
@@ -125,19 +125,19 @@ void Init_PlanePosturePara(void)
 
 void Init_InitialZeroShift(void)
 {
-	sRobot_InitialZeroShift.LF[0] = 0;
-	sRobot_InitialZeroShift.LH[0] = 0;
-	sRobot_InitialZeroShift.RF[0] = 0;
-	sRobot_InitialZeroShift.RH[0] = 0;
+	sRobot_InitialZeroShift.LF[0] = 60;
+	sRobot_InitialZeroShift.LH[0] = 30;
+	sRobot_InitialZeroShift.RF[0] = 60;
+	sRobot_InitialZeroShift.RH[0] = 30;
 
-	sRobot_InitialZeroShift.LF[1] = 30;
-	sRobot_InitialZeroShift.LH[1] = 30;
-	sRobot_InitialZeroShift.RF[1] = 30;
-	sRobot_InitialZeroShift.RH[1] = 30;
+	sRobot_InitialZeroShift.LF[1] = 0;
+	sRobot_InitialZeroShift.LH[1] = 0;
+	sRobot_InitialZeroShift.RF[1] = 0;
+	sRobot_InitialZeroShift.RH[1] = 0;
 
-	sRobot_InitialZeroShift.LF[2] = 0;
+	sRobot_InitialZeroShift.LF[2] = 10;
 	sRobot_InitialZeroShift.LH[2] = 0;
-	sRobot_InitialZeroShift.RF[2] = 0;
+	sRobot_InitialZeroShift.RF[2] = 10;
 	sRobot_InitialZeroShift.RH[2] = 0;
 }
 
@@ -453,7 +453,7 @@ void ParaUpdate(int mode)
 				sRobot_BodyPosturePara.Pitch = sRobot_PlanePosturePara.Pitch;
 
 				if ((sRobot_MotionPara.Interval / (1000 * sRobot_MotionPara.Cycle * (1 - 4 * (1 - (0.75 + ((float)RemoteData.Dial / 1024)))) / 2) * PI) < 0.4)
-					sRobot_MotionPara.Cycle = 0.4 + ((float)RemoteData.Dial / 128);
+					sRobot_MotionPara.Cycle = 0.8 + ((float)RemoteData.Dial / 32);
 				PRINTF_TIPS("WALKING. Cycle:%f\n", sRobot_MotionPara.Cycle);
 				Revise_WalkPhase();
 				break;
@@ -474,7 +474,7 @@ void ParaUpdate(int mode)
 			switch (RemoteData.Coordinate)
 			{
 			case UNIVERSE_XYPY:
-				SCurveCtrl_SetNewSpd(&sSCurveSpdCtrlSpan_Z, RemoteData.Joystick_LY);
+				SCurveCtrl_SetNewSpd(&sSCurveSpdCtrlSpan_Z, 1.3 * RemoteData.Joystick_LY);
 				sRobot_MotionPara.Span_Z = sSCurveSpdCtrlSpan_Z.SpdOutput;
 				SCurveCtrl_SetNewSpd(&sSCurveSpdCtrlSpan_X, RemoteData.Joystick_LX);
 				sRobot_MotionPara.Span_X = -sSCurveSpdCtrlSpan_X.SpdOutput;

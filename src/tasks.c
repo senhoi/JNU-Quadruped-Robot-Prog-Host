@@ -173,6 +173,6 @@ void RevTask(void)
 
 void LowPriorityTask(void)
 {
-	//DisplayTask();
+	DisplayTask();
 	RevTask();
 }
