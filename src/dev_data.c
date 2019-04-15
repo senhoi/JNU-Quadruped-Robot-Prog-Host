@@ -5,6 +5,8 @@
 
 Remote_t RemoteData;
 Gyro_t GyroData;
+Gyro_t GyroData_Prev;
+Gyro_t GyroData_Fresh;
 
 void AnalysisRemoteData(serial_frame_t *pFrame)
 {
@@ -18,7 +20,7 @@ void AnalysisRemoteData(serial_frame_t *pFrame)
 	RemoteData.Dial = pFrame->pdata[6];
 }
 
-void AnalysisGyroData(serial_frame_t *pFrame)
+void AnalysisGyroData(serial_frame_t *pFrame, int filter, float cutFrq)
 {
 	float_uint8_t gyro_temp_arr[6];
 
@@ -30,12 +32,38 @@ void AnalysisGyroData(serial_frame_t *pFrame)
 		}
 	}
 
-	GyroData.Pitch = gyro_temp_arr[0].fl;
-	GyroData.Roll = gyro_temp_arr[1].fl;
-	GyroData.Yaw = gyro_temp_arr[2].fl;
-	GyroData.Gyro_X = gyro_temp_arr[3].fl;
-	GyroData.Gyro_Y = gyro_temp_arr[4].fl;
-	GyroData.Gyro_Z = gyro_temp_arr[5].fl;
+	GyroData_Fresh.Pitch = gyro_temp_arr[0].fl;
+	GyroData_Fresh.Roll = gyro_temp_arr[1].fl;
+	GyroData_Fresh.Yaw = gyro_temp_arr[2].fl;
+	GyroData_Fresh.Gyro_X = gyro_temp_arr[3].fl;
+	GyroData_Fresh.Gyro_Y = gyro_temp_arr[4].fl;
+	GyroData_Fresh.Gyro_Z = gyro_temp_arr[5].fl;
+
+	if (filter == 1) //使用滤波器
+	{
+		LowPassFilter_RC_1order(&GyroData_Fresh.Pitch, &GyroData.Pitch, &GyroData_Prev.Pitch, 1000 / sRobot_MotionPara.Interval, cutFrq);
+		LowPassFilter_RC_1order(&GyroData_Fresh.Roll, &GyroData.Roll, &GyroData_Prev.Roll, 1000 / sRobot_MotionPara.Interval, cutFrq);
+		LowPassFilter_RC_1order(&GyroData_Fresh.Yaw, &GyroData.Yaw, &GyroData_Prev.Yaw, 1000 / sRobot_MotionPara.Interval, cutFrq);
+		LowPassFilter_RC_1order(&GyroData_Fresh.Gyro_X, &GyroData.Gyro_X, &GyroData_Prev.Gyro_X, 1000 / sRobot_MotionPara.Interval, cutFrq);
+		LowPassFilter_RC_1order(&GyroData_Fresh.Gyro_Y, &GyroData.Gyro_Y, &GyroData_Prev.Gyro_Y, 1000 / sRobot_MotionPara.Interval, cutFrq);
+		LowPassFilter_RC_1order(&GyroData_Fresh.Gyro_Z, &GyroData.Gyro_Z, &GyroData_Prev.Gyro_Z, 1000 / sRobot_MotionPara.Interval, cutFrq);
+	}
+	else
+	{
+		GyroData_Prev.Pitch = GyroData.Pitch;
+		GyroData_Prev.Roll = GyroData.Roll;
+		GyroData_Prev.Yaw = GyroData.Yaw;
+		GyroData_Prev.Gyro_X = GyroData.Gyro_X;
+		GyroData_Prev.Gyro_Y = GyroData.Gyro_Y;
+		GyroData_Prev.Gyro_Z = GyroData.Gyro_Z;
+
+		GyroData.Pitch = GyroData_Fresh.Pitch;
+		GyroData.Roll = GyroData_Fresh.Roll;
+		GyroData.Yaw = GyroData_Fresh.Yaw;
+		GyroData.Gyro_X = GyroData_Fresh.Gyro_X;
+		GyroData.Gyro_Y = GyroData_Fresh.Gyro_Y;
+		GyroData.Gyro_Z = GyroData_Fresh.Gyro_Z;
+	}
 }
 
 void DispRemoteData(void)
@@ -87,6 +115,7 @@ void CreateGyroLogFile(void)
 
 void WriteGyroLogFile(void)
 {
+	fprintf(fd_gyro_log, "%f\t%f\t%f\t%f\t%f\t%f\t%f\t", sRobot_MotionPara.Time_S + sRobot_MotionPara.Time_MS / 1000.0, GyroData_Fresh.Pitch, GyroData_Fresh.Roll, GyroData_Fresh.Yaw, GyroData_Fresh.Gyro_X, GyroData_Fresh.Gyro_Y, GyroData_Fresh.Gyro_Z);
 	fprintf(fd_gyro_log, "%f\t%f\t%f\t%f\t%f\t%f\t%f\n", sRobot_MotionPara.Time_S + sRobot_MotionPara.Time_MS / 1000.0, GyroData.Pitch, GyroData.Roll, GyroData.Yaw, GyroData.Gyro_X, GyroData.Gyro_Y, GyroData.Gyro_Z);
 }
 

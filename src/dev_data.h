@@ -3,6 +3,7 @@
 
 #include "dev/uart.h"
 #include "ctrl/para_ctrl.h"
+#include "usr_lib/filter.h"
 
 enum Gait_t
 {
@@ -43,7 +44,7 @@ extern Remote_t RemoteData;
 extern Gyro_t GyroData;
 
 void AnalysisRemoteData(serial_frame_t *pFrame);
-void AnalysisGyroData(serial_frame_t *pFrame);
+void AnalysisGyroData(serial_frame_t *pFrame, int filter, float cutFrq);
 void DispRemoteData(void);
 void DispGyroData(void);
 void CreateGyroLogFile(void);

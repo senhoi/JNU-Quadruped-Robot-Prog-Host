@@ -177,7 +177,7 @@ void RevTask(void)
 			break;
 
 		case FRAMETYPE_GYROSCOPE:
-			AnalysisGyroData(&sFrame);
+			AnalysisGyroData(&sFrame, 1, 0.5f * (1.0f / (sRobot_MotionPara.Cycle / sRobot_MotionPara.PhaseTotal)));
 			break;
 
 		default:
