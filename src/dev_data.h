@@ -2,6 +2,7 @@
 #define _DEV_DATA_H
 
 #include "dev/uart.h"
+#include "ctrl/para_ctrl.h"
 
 enum Gait_t
 {
@@ -28,10 +29,25 @@ typedef struct Remote_t
 	enum Coordinate_t Coordinate;
 } Remote_t;
 
+typedef struct Gyro_t
+{
+	float Pitch;
+	float Roll;
+	float Yaw;
+	float Gyro_X;
+	float Gyro_Y;
+	float Gyro_Z;
+} Gyro_t;
+
 extern Remote_t RemoteData;
+extern Gyro_t GyroData;
 
 void AnalysisRemoteData(serial_frame_t *pFrame);
+void AnalysisGyroData(serial_frame_t *pFrame);
 void DispRemoteData(void);
-void UpdateRemoteParameter(void);
+void DispGyroData(void);
+void CreateGyroLogFile(void);
+void WriteGyroLogFile(void);
+void SaveGyroLogFile(void);
 
 #endif

@@ -39,6 +39,10 @@ void CreateLogFile(void)
 	{
 		LOG("%s", LogFileName);
 	}
+
+#ifdef GYRO_LOG
+	CreateGyroLogFile();
+#endif
 }
 
 void ProgStop(int signo)
@@ -53,6 +57,10 @@ void ProgStop(int signo)
 	{
 		printf("Failed to closed log file. \n");
 	}
+
+#ifdef GYRO_LOG
+	SaveGyroLogFile();
+#endif
 
 	_exit(0);
 }
@@ -88,7 +96,7 @@ void InitTask(void)
 		PRINTF_TIPS("SerialPort initialized successfully. fd:%d", fd_serialport);
 	}
 
-//	serialTest(fd_serialport, FRAME_HEAD);
+	//serialTest(fd_serialport, FRAME_HEAD);
 
 	Init_AllPara(GAIT_TROT);
 	SCurveCtrlInit();
@@ -145,11 +153,16 @@ void InterruptTask(void)
 
 	serialSendFrameHead(fd_serialport, FRAME_HEAD);
 	serialSendFloatArr(fd_serialport, 12, JointAngle, 1);
+
+#ifdef GYRO_LOG
+	WriteGyroLogFile();
+#endif
 }
 
 void DisplayTask(void)
 {
 	DispRemoteData();
+	DispGyroData();
 }
 
 void RevTask(void)
@@ -163,6 +176,10 @@ void RevTask(void)
 			AnalysisRemoteData(&sFrame);
 			break;
 
+		case FRAMETYPE_GYROSCOPE:
+			AnalysisGyroData(&sFrame);
+			break;
+
 		default:
 			PRINTF_WARNING("Unknown frame type.");
 			break;
@@ -173,6 +190,6 @@ void RevTask(void)
 
 void LowPriorityTask(void)
 {
-	DisplayTask();
+	//DisplayTask();
 	RevTask();
 }

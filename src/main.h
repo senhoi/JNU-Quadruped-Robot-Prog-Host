@@ -49,3 +49,5 @@ extern FILE *fd_log;
 	}
 
 #endif
+
+#define GYRO_LOG

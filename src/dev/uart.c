@@ -326,7 +326,8 @@ int serialRevFrame(serial_frame_t *pFrame, int fd, uint16_t frame_head)
 					if (counter == (rev.num - 1))
 					{
 						*pFrame = rev;
-						serialFlush(fd);
+						if ((serialDataAvail(fd) > 128)) //To avoid the blocking of the buffer.
+							serialFlush(fd);
 						return 0;
 					}
 					counter++;
