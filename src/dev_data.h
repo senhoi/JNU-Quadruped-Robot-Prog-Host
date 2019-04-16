@@ -40,11 +40,22 @@ typedef struct Gyro_t
 	float Gyro_Z;
 } Gyro_t;
 
+typedef struct GyroFilter_t
+{
+	float CutFreq;
+	float SampleFreq;
+	Gyro_t Data;
+	Gyro_t PrevData;
+	Gyro_t FreshData;
+} GyroFilter_t;
+
 extern Remote_t RemoteData;
 extern Gyro_t GyroData;
+extern GyroFilter_t sGyroData_LowFreq;
+extern GyroFilter_t sGyroData_HighFreq;
 
 void AnalysisRemoteData(serial_frame_t *pFrame);
-void AnalysisGyroData(serial_frame_t *pFrame, int filter, float cutFrq);
+void AnalysisGyroData(serial_frame_t *pFrame, int filter);
 void DispRemoteData(void);
 void DispGyroData(void);
 void CreateGyroLogFile(void);

@@ -287,12 +287,12 @@ SCurveSpdCtrl_t sScurvePosCtrlBody_Pitch;
 
 void Modify_Pitch(void)
 {
-	if (fabs(GyroData.Pitch) > 4.5f)
-		SCurveCtrl_SetNewSpd(&sScurvePosCtrlBody_Pitch, GyroData.Pitch);
+	if (fabs(sGyroData_HighFreq.Data.Pitch) > 4.5f)
+		SCurveCtrl_SetNewSpd(&sScurvePosCtrlBody_Pitch, sGyroData_LowFreq.Data.Pitch);
 	else
 		SCurveCtrl_SetNewSpd(&sScurvePosCtrlBody_Pitch, 0.0f);
 
-	sRobot_BodyPosturePara.Pitch = sScurvePosCtrlBody_Pitch.SpdOutput;
+	sRobot_BodyPosturePara.Pitch = -sScurvePosCtrlBody_Pitch.SpdOutput;
 }
 
 void Modify_Posture(void)

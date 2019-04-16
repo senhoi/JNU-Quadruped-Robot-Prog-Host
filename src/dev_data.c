@@ -4,9 +4,11 @@
 //extern u162u8 CameraData[3];
 
 Remote_t RemoteData;
+
+GyroFilter_t sGyroData_LowFreq;
+GyroFilter_t sGyroData_HighFreq;
+
 Gyro_t GyroData;
-Gyro_t GyroData_Prev;
-Gyro_t GyroData_Fresh;
 
 void AnalysisRemoteData(serial_frame_t *pFrame)
 {
@@ -20,8 +22,10 @@ void AnalysisRemoteData(serial_frame_t *pFrame)
 	RemoteData.Dial = pFrame->pdata[6];
 }
 
-void AnalysisGyroData(serial_frame_t *pFrame, int filter, float cutFrq)
+void AnalysisGyroData(serial_frame_t *pFrame, int filter)
 {
+	void GyroData_LowPassFilter(GyroFilter_t * sGyroFilter);
+
 	float_uint8_t gyro_temp_arr[6];
 
 	for (int i = 0; i < 6; i++)
@@ -32,38 +36,49 @@ void AnalysisGyroData(serial_frame_t *pFrame, int filter, float cutFrq)
 		}
 	}
 
-	GyroData_Fresh.Pitch = gyro_temp_arr[0].fl;
-	GyroData_Fresh.Roll = gyro_temp_arr[1].fl;
-	GyroData_Fresh.Yaw = gyro_temp_arr[2].fl;
-	GyroData_Fresh.Gyro_X = gyro_temp_arr[3].fl;
-	GyroData_Fresh.Gyro_Y = gyro_temp_arr[4].fl;
-	GyroData_Fresh.Gyro_Z = gyro_temp_arr[5].fl;
+	GyroData.Pitch = gyro_temp_arr[0].fl;
+	GyroData.Roll = gyro_temp_arr[1].fl;
+	GyroData.Yaw = gyro_temp_arr[2].fl;
+	GyroData.Gyro_X = gyro_temp_arr[3].fl;
+	GyroData.Gyro_Y = gyro_temp_arr[4].fl;
+	GyroData.Gyro_Z = gyro_temp_arr[5].fl;
 
 	if (filter == 1) //使用滤波器
 	{
-		LowPassFilter_RC_1order(&GyroData_Fresh.Pitch, &GyroData.Pitch, &GyroData_Prev.Pitch, 1000 / sRobot_MotionPara.Interval, cutFrq);
-		LowPassFilter_RC_1order(&GyroData_Fresh.Roll, &GyroData.Roll, &GyroData_Prev.Roll, 1000 / sRobot_MotionPara.Interval, cutFrq);
-		LowPassFilter_RC_1order(&GyroData_Fresh.Yaw, &GyroData.Yaw, &GyroData_Prev.Yaw, 1000 / sRobot_MotionPara.Interval, cutFrq);
-		LowPassFilter_RC_1order(&GyroData_Fresh.Gyro_X, &GyroData.Gyro_X, &GyroData_Prev.Gyro_X, 1000 / sRobot_MotionPara.Interval, cutFrq);
-		LowPassFilter_RC_1order(&GyroData_Fresh.Gyro_Y, &GyroData.Gyro_Y, &GyroData_Prev.Gyro_Y, 1000 / sRobot_MotionPara.Interval, cutFrq);
-		LowPassFilter_RC_1order(&GyroData_Fresh.Gyro_Z, &GyroData.Gyro_Z, &GyroData_Prev.Gyro_Z, 1000 / sRobot_MotionPara.Interval, cutFrq);
-	}
-	else
-	{
-		GyroData_Prev.Pitch = GyroData.Pitch;
-		GyroData_Prev.Roll = GyroData.Roll;
-		GyroData_Prev.Yaw = GyroData.Yaw;
-		GyroData_Prev.Gyro_X = GyroData.Gyro_X;
-		GyroData_Prev.Gyro_Y = GyroData.Gyro_Y;
-		GyroData_Prev.Gyro_Z = GyroData.Gyro_Z;
+		sGyroData_LowFreq.SampleFreq = 1000.0f / sRobot_MotionPara.Interval;
+		sGyroData_LowFreq.CutFreq = 0.05f * (1.0f / (sRobot_MotionPara.Cycle / sRobot_MotionPara.PhaseTotal));
 
-		GyroData.Pitch = GyroData_Fresh.Pitch;
-		GyroData.Roll = GyroData_Fresh.Roll;
-		GyroData.Yaw = GyroData_Fresh.Yaw;
-		GyroData.Gyro_X = GyroData_Fresh.Gyro_X;
-		GyroData.Gyro_Y = GyroData_Fresh.Gyro_Y;
-		GyroData.Gyro_Z = GyroData_Fresh.Gyro_Z;
+		sGyroData_LowFreq.FreshData.Pitch = GyroData.Pitch;
+		sGyroData_LowFreq.FreshData.Roll = GyroData.Roll;
+		sGyroData_LowFreq.FreshData.Yaw = GyroData.Yaw;
+		sGyroData_LowFreq.FreshData.Gyro_X = GyroData.Gyro_X;
+		sGyroData_LowFreq.FreshData.Gyro_Y = GyroData.Gyro_Y;
+		sGyroData_LowFreq.FreshData.Gyro_Z = GyroData.Gyro_Z;
+
+		GyroData_LowPassFilter(&sGyroData_LowFreq);
+
+		sGyroData_HighFreq.SampleFreq = 1000.0f / sRobot_MotionPara.Interval;
+		sGyroData_HighFreq.CutFreq = 5.0f * (1.0f / (sRobot_MotionPara.Cycle / sRobot_MotionPara.PhaseTotal));
+
+		sGyroData_HighFreq.FreshData.Pitch = GyroData.Pitch;
+		sGyroData_HighFreq.FreshData.Roll = GyroData.Roll;
+		sGyroData_HighFreq.FreshData.Yaw = GyroData.Yaw;
+		sGyroData_HighFreq.FreshData.Gyro_X = GyroData.Gyro_X;
+		sGyroData_HighFreq.FreshData.Gyro_Y = GyroData.Gyro_Y;
+		sGyroData_HighFreq.FreshData.Gyro_Z = GyroData.Gyro_Z;
+
+		GyroData_LowPassFilter(&sGyroData_HighFreq);
 	}
+}
+
+void GyroData_LowPassFilter(GyroFilter_t *sGyroFilter)
+{
+	LowPassFilter_RC_1order(&sGyroFilter->FreshData.Pitch, &sGyroFilter->Data.Pitch, &sGyroFilter->PrevData.Pitch, sGyroFilter->SampleFreq, sGyroFilter->CutFreq);
+	LowPassFilter_RC_1order(&sGyroFilter->FreshData.Roll, &sGyroFilter->Data.Roll, &sGyroFilter->PrevData.Roll, sGyroFilter->SampleFreq, sGyroFilter->CutFreq);
+	LowPassFilter_RC_1order(&sGyroFilter->FreshData.Yaw, &sGyroFilter->Data.Yaw, &sGyroFilter->PrevData.Yaw, sGyroFilter->SampleFreq, sGyroFilter->CutFreq);
+	LowPassFilter_RC_1order(&sGyroFilter->FreshData.Gyro_X, &sGyroFilter->Data.Gyro_X, &sGyroFilter->PrevData.Gyro_X, sGyroFilter->SampleFreq, sGyroFilter->CutFreq);
+	LowPassFilter_RC_1order(&sGyroFilter->FreshData.Gyro_Y, &sGyroFilter->Data.Gyro_Y, &sGyroFilter->PrevData.Gyro_Y, sGyroFilter->SampleFreq, sGyroFilter->CutFreq);
+	LowPassFilter_RC_1order(&sGyroFilter->FreshData.Gyro_Z, &sGyroFilter->Data.Gyro_Z, &sGyroFilter->PrevData.Gyro_Z, sGyroFilter->SampleFreq, sGyroFilter->CutFreq);
 }
 
 void DispRemoteData(void)
@@ -115,7 +130,6 @@ void CreateGyroLogFile(void)
 
 void WriteGyroLogFile(void)
 {
-	fprintf(fd_gyro_log, "%f\t%f\t%f\t%f\t%f\t%f\t%f\t", sRobot_MotionPara.Time_S + sRobot_MotionPara.Time_MS / 1000.0, GyroData_Fresh.Pitch, GyroData_Fresh.Roll, GyroData_Fresh.Yaw, GyroData_Fresh.Gyro_X, GyroData_Fresh.Gyro_Y, GyroData_Fresh.Gyro_Z);
 	fprintf(fd_gyro_log, "%f\t%f\t%f\t%f\t%f\t%f\t%f\n", sRobot_MotionPara.Time_S + sRobot_MotionPara.Time_MS / 1000.0, GyroData.Pitch, GyroData.Roll, GyroData.Yaw, GyroData.Gyro_X, GyroData.Gyro_Y, GyroData.Gyro_Z);
 }
 
