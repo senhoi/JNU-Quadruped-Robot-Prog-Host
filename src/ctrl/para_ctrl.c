@@ -280,15 +280,26 @@ void Calc_Plane2Body(void)
 	free(Matrix_Rz.pMatrix);
 }
 
+SCurveSpdCtrl_t sSCurveSpdCtrlSpan_Z;
+SCurveSpdCtrl_t sSCurveSpdCtrlSpan_X;
+SCurvePosCtrl_t sScurvePosCtrlBody_Y;
+SCurveSpdCtrl_t sScurvePosCtrlBody_Pitch;
+
+void Modify_Pitch(void)
+{
+	if (fabs(GyroData.Pitch) > 4.5f)
+		SCurveCtrl_SetNewSpd(&sScurvePosCtrlBody_Pitch, GyroData.Pitch);
+	else
+		SCurveCtrl_SetNewSpd(&sScurvePosCtrlBody_Pitch, 0.0f);
+
+	sRobot_BodyPosturePara.Pitch = sScurvePosCtrlBody_Pitch.SpdOutput;
+}
+
 void Modify_Posture(void)
 {
 	Calc_Plane2Position();
 	Calc_Plane2Body();
 }
-
-SCurveSpdCtrl_t sSCurveSpdCtrlSpan_Z;
-SCurveSpdCtrl_t sSCurveSpdCtrlSpan_X;
-SCurvePosCtrl_t sScurvePosCtrlBody_Y;
 
 void Modify_COG(void)
 {
@@ -308,8 +319,10 @@ void SCurveCtrlInit(void)
 {
 	SCurveSpdCtrl_New(&sSCurveSpdCtrlSpan_Z, 0.01, 20, 20, 0);
 	sSCurveSpdCtrlSpan_Z.Flag = 1;
-	SCurveSpdCtrl_New(&sSCurveSpdCtrlSpan_X, 0.01, 20, 20, 0);
+	SCurveSpdCtrl_New(&sSCurveSpdCtrlSpan_X, 0.01, 50, 50, 0);
 	sSCurveSpdCtrlSpan_X.Flag = 1;
+	SCurveSpdCtrl_New(&sScurvePosCtrlBody_Pitch, 0.01, 20, 20, 0);
+	sScurvePosCtrlBody_Pitch.Flag = 1;
 	SCurvePosCtrl_New(&sScurvePosCtrlBody_Y, 100, 0.01, sRobot_MotionPara.Cycle * sRobot_MotionPara.DutyRatio, 30, 2000, 500, 0, sRobot_MotionPara.COG_Shift);
 }
 
@@ -397,6 +410,7 @@ void TimeKeeping(void)
 	}
 	SCurveSpdCtrl_Calc(&sSCurveSpdCtrlSpan_Z);
 	SCurveSpdCtrl_Calc(&sSCurveSpdCtrlSpan_X);
+	SCurveSpdCtrl_Calc(&sScurvePosCtrlBody_Pitch);
 }
 
 void ParaUpdate(int mode)
@@ -449,8 +463,8 @@ void ParaUpdate(int mode)
 
 				//	sRobot_PlanePosturePara.Roll = GyroscopeData[5].fl;
 				//	sRobot_PlanePosturePara.Pitch = GyroscopeData[6].fl;
-				sRobot_BodyPosturePara.Roll = sRobot_PlanePosturePara.Roll;
-				sRobot_BodyPosturePara.Pitch = sRobot_PlanePosturePara.Pitch;
+				//	sRobot_BodyPosturePara.Roll = sRobot_PlanePosturePara.Roll;
+				//sRobot_BodyPosturePara.Pitch = sRobot_PlanePosturePara.Pitch;
 
 				if ((sRobot_MotionPara.Interval / (1000 * sRobot_MotionPara.Cycle * (1 - 4 * (1 - (0.75 + ((float)RemoteData.Dial / 1024)))) / 2) * PI) < 0.4)
 					sRobot_MotionPara.Cycle = 0.8 + ((float)RemoteData.Dial / 32);
@@ -493,7 +507,7 @@ void ParaUpdate(int mode)
 				PRINTF_TIPS("TROTTING. DutyRatio:%f\n", sRobot_MotionPara.DutyRatio);
 				break;
 			case POSITION_YZPY:
-				sRobot_MotionPara.Span_Y = 0 + 150 * ((float)RemoteData.Dial / 512);
+				sRobot_MotionPara.Span_Y = 0 + 200 * ((float)RemoteData.Dial / 512);
 				PRINTF_TIPS("TROTTING. Span_Y:%d\n", sRobot_MotionPara.Span_Y);
 				break;
 			}

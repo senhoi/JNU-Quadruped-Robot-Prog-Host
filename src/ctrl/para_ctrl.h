@@ -132,6 +132,7 @@ void Calc_Plane2Body(void);
 void Reset_WalkPhase(void);
 void Revise_WalkPhase(void);
 void Modify_COG(void);
+void Modify_Pitch(void); //若陀螺仪数据未经滤波，一定不要调用此函数！！！
 void Modify_Posture(void);
 void SCurveCtrlInit(void);
 void TimeKeeping(void);

@@ -122,6 +122,7 @@ void InterruptTask(void)
 	ParaUpdate(0);
 
 	Modify_COG();
+	Modify_Pitch(); //若陀螺仪数据未经滤波，一定不要调用此函数！！！
 	Modify_Posture();
 
 	switch (sRobot_MotionPara.Gait)
