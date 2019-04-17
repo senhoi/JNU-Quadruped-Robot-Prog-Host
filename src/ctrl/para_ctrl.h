@@ -74,6 +74,7 @@ typedef struct Robot_MotionPara_t
 	int Span_Y;		 //抬腿高度		[mm]
 	float Span_W;	//自转角度		[rad]
 	float COG_Shift; //Walk步态平移量
+	float Zero_Y;	//Walk步态抬腿量
 } Robot_MotionPara_t;
 
 //机器人足底平面参数
@@ -85,10 +86,10 @@ typedef struct Robot_PlanePosturePara_t
 
 typedef struct Robot_ZeroShift_t
 {
-	int LF;
-	int LH;
-	int RF;
-	int RH;
+	int LF[3];
+	int LH[3];
+	int RF[3];
+	int RH[3];
 } Robot_ZeroShift_t;
 
 typedef struct Robot_InitialZeroShift_t

@@ -98,7 +98,7 @@ void InitTask(void)
 
 	//serialTest(fd_serialport, FRAME_HEAD);
 
-	Init_AllPara(GAIT_TROT);
+	Init_AllPara(GAIT_WALK);
 	SCurveCtrlInit();
 	Calc_Position2Zero();
 	Calc_Body2Leg();
@@ -136,6 +136,7 @@ void InterruptTask(void)
 		sFootEndingPos = Calc_GaitTrajPoint_Trot();
 		break;
 	case GAIT_WALK:
+		Calc_Position2Zero();
 		Calc_GaitTrajPolyCoeffi_Walk();
 		sFootEndingPos = Calc_GaitTrajPoint_Walk();
 		break;
