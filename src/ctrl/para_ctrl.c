@@ -288,10 +288,16 @@ SCurveSpdCtrl_t sScurvePosCtrlBody_Pitch;
 void Modify_Pitch(void)
 {
 	if (fabs(sGyroData_HighFreq.Data.Pitch) > 4.5f)
+	{
+		DEBUG("Auto adjusting posture");
 		SCurveCtrl_SetNewSpd(&sScurvePosCtrlBody_Pitch, sGyroData_LowFreq.Data.Pitch);
+	}
 	else
+	{
+		DEBUG("Fixed posture");
 		SCurveCtrl_SetNewSpd(&sScurvePosCtrlBody_Pitch, 0.0f);
-
+	}
+	DEBUG("Pitch:%f",sGyroData_HighFreq.Data.Pitch);
 	sRobot_BodyPosturePara.Pitch = -sScurvePosCtrlBody_Pitch.SpdOutput;
 }
 
