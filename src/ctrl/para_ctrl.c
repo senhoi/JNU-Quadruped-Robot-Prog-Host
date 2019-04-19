@@ -60,10 +60,10 @@ void Init_MotionPara(int gait)
 		sRobot_MotionPara.Interval = 10;
 		sRobot_MotionPara.Span_Z = 0;
 		sRobot_MotionPara.Span_X = 0;
-		sRobot_MotionPara.Span_Y = 0;
+		sRobot_MotionPara.Span_Y = 200;
 		sRobot_MotionPara.Span_W = 0.0f;
-		sRobot_MotionPara.COG_Shift = 60;
-		sRobot_MotionPara.Zero_Y = 30;
+		sRobot_MotionPara.COG_Shift = 50;
+		sRobot_MotionPara.Zero_Y = 20;
 		Reset_WalkPhase();
 		break;
 
@@ -77,7 +77,7 @@ void Init_MechanicalPara(void)
 #ifndef __SERVO_ROBOT
 	sRobot_MechanicalPara.BodyLength = 560;
 	sRobot_MechanicalPara.BodyWidth = 250;
-	sRobot_MechanicalPara.BodyHeight = 500;
+	sRobot_MechanicalPara.BodyHeight = 480;
 	sRobot_MechanicalPara.Leg_a1 = 350;
 	sRobot_MechanicalPara.Leg_a2 = 280;
 	sRobot_MechanicalPara.Leg_d1 = 0;
@@ -102,7 +102,7 @@ void Init_BodyPosturePara(void)
 #ifndef __SERVO_ROBOT
 	sRobot_BodyPosturePara.X = 0;
 	sRobot_BodyPosturePara.Y = 0;
-	sRobot_BodyPosturePara.Z = 500;
+	sRobot_BodyPosturePara.Z = 480;
 	sRobot_BodyPosturePara.Roll = 0;
 	sRobot_BodyPosturePara.Pitch = 0;
 	sRobot_BodyPosturePara.Yaw = 0;
@@ -126,10 +126,10 @@ void Init_PlanePosturePara(void)
 
 void Init_InitialZeroShift(void)
 {
-	sRobot_InitialZeroShift.LF[0] = 140;
-	sRobot_InitialZeroShift.LH[0] = 80;
-	sRobot_InitialZeroShift.RF[0] = 140;
-	sRobot_InitialZeroShift.RH[0] = 80;
+	sRobot_InitialZeroShift.LF[0] = 120;
+	sRobot_InitialZeroShift.LH[0] = 100;
+	sRobot_InitialZeroShift.RF[0] = 120;
+	sRobot_InitialZeroShift.RH[0] = 100;
 
 	sRobot_InitialZeroShift.LF[1] = -80;
 	sRobot_InitialZeroShift.LH[1] = -80;
@@ -297,20 +297,31 @@ SCurvePosCtrl_t sScurvePosCtrlBody_Y;
 SCurvePosCtrl_t sScurvePosCtrlZero_Y;
 SCurveSpdCtrl_t sScurvePosCtrlBody_Pitch;
 
+PID_Increment_t PID_Body_Pitch;
+
 void Modify_Pitch(void)
 {
-	if (fabs(sGyroData_HighFreq.Data.Pitch) > 4.5f)
+	DEBUG("Pitch:%f", sGyroData_HighFreq.Data.Pitch);
+	//sRobot_BodyPosturePara.Pitch = -sScurvePosCtrlBody_Pitch.SpdOutput;
+	PID_Body_Pitch.Ref = 0.0f;
+	PID_Body_Pitch.Feedback = sGyroData_HighFreq.Data.Pitch;
+
+	PID_Increment_Calc(&PID_Body_Pitch);
+
+	DEBUG("PID_OUT:%f", PID_Body_Pitch.Output);
+
+	if (fabs(sGyroData_HighFreq.Data.Pitch) > 2.0f)
 	{
 		DEBUG("Auto adjusting posture");
-		SCurveCtrl_SetNewSpd(&sScurvePosCtrlBody_Pitch, sGyroData_LowFreq.Data.Pitch);
+		sRobot_BodyPosturePara.Pitch += PID_Body_Pitch.Output;
 	}
 	else
 	{
 		DEBUG("Fixed posture");
-		SCurveCtrl_SetNewSpd(&sScurvePosCtrlBody_Pitch, 0.0f);
 	}
-	DEBUG("Pitch:%f",sGyroData_HighFreq.Data.Pitch);
-	sRobot_BodyPosturePara.Pitch = -sScurvePosCtrlBody_Pitch.SpdOutput;
+
+	DEBUG("BodyPitch:%f", sRobot_BodyPosturePara.Pitch);
+	//sRobot_PlanePosturePara.Pitch = sRobot_BodyPosturePara.Pitch;
 }
 
 void Modify_Posture(void)
@@ -335,16 +346,16 @@ void Modify_COG(void)
 	case 2:
 		sRobot_BodyPosturePara.Y = sScurvePosCtrlBody_Y.PosOutput;
 
-		sRobot_ZeroShift.LF[2] = sScurvePosCtrlZero_Y.PosOutput;
-		sRobot_ZeroShift.LH[2] = sScurvePosCtrlZero_Y.PosOutput;
-		sRobot_ZeroShift.RF[2] = -sScurvePosCtrlZero_Y.PosOutput;
-		sRobot_ZeroShift.RH[2] = -sScurvePosCtrlZero_Y.PosOutput;
+		sRobot_ZeroShift.LF[2] = -sScurvePosCtrlZero_Y.PosOutput;
+		sRobot_ZeroShift.LH[2] = -sScurvePosCtrlZero_Y.PosOutput;
+		sRobot_ZeroShift.RF[2] = sScurvePosCtrlZero_Y.PosOutput;
+		sRobot_ZeroShift.RH[2] = sScurvePosCtrlZero_Y.PosOutput;
 
 		break;
 	}
 }
 
-void SCurveCtrlInit(void)
+void SCurveCtrl_Init(void)
 {
 	SCurveSpdCtrl_New(&sSCurveSpdCtrlSpan_Z, 0.01, 20, 20, 0);
 	sSCurveSpdCtrlSpan_Z.Flag = 1;
@@ -354,6 +365,11 @@ void SCurveCtrlInit(void)
 	sScurvePosCtrlBody_Pitch.Flag = 1;
 	SCurvePosCtrl_New(&sScurvePosCtrlBody_Y, 100, 0.01, sRobot_MotionPara.Cycle * (1 - 4 * (1 - sRobot_MotionPara.DutyRatio)) / 2.0f, 30, 2000, 500, 0, sRobot_MotionPara.COG_Shift);
 	SCurvePosCtrl_New(&sScurvePosCtrlZero_Y, 100, 0.01, sRobot_MotionPara.Cycle * (1 - 4 * (1 - sRobot_MotionPara.DutyRatio)) / 2.0f, 30, 2000, 500, 0, sRobot_MotionPara.Zero_Y);
+}
+
+void PID_Init(void)
+{
+	PID_Increment_Reset(&PID_Body_Pitch, 0.02f, 0.0f, 0.0f, 2.0f, 1.0f, 1.0f, 0.5f);
 }
 
 void TimeKeeping(void)
@@ -453,11 +469,11 @@ void ParaUpdate(int mode)
 {
 	if (mode == 0)
 	{
-		/*if (sRobot_MotionPara.Gait != RemoteData.Gait)
+		if (sRobot_MotionPara.Gait != RemoteData.Gait)
 		{
 			sRobot_MotionPara.Gait = RemoteData.Gait;
 			Init_AllPara(RemoteData.Gait);
-		}*/
+		}
 		switch (RemoteData.Gait)
 		{
 		case GAIT_STAND:

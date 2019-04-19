@@ -3,6 +3,7 @@
 
 #include "../usr_lib/matrix.h"
 #include "../usr_lib/scurve.h"
+#include "../usr_lib/pid.h"
 #include "../main.h"
 
 #define GAIT_STAND 0
@@ -135,7 +136,8 @@ void Revise_WalkPhase(void);
 void Modify_COG(void);
 void Modify_Pitch(void); //若陀螺仪数据未经滤波，一定不要调用此函数！！！
 void Modify_Posture(void);
-void SCurveCtrlInit(void);
+void SCurveCtrl_Init(void);
+void PID_Init(void);
 void TimeKeeping(void);
 
 #endif

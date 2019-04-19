@@ -36,7 +36,7 @@ void AnalysisGyroData(serial_frame_t *pFrame, int filter)
 		}
 	}
 
-	GyroData.Pitch = gyro_temp_arr[0].fl;
+	GyroData.Pitch = gyro_temp_arr[0].fl - 2.43f;
 	GyroData.Roll = gyro_temp_arr[1].fl;
 	GyroData.Yaw = gyro_temp_arr[2].fl;
 	GyroData.Gyro_X = gyro_temp_arr[3].fl;

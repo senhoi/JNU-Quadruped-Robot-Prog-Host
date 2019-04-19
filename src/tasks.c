@@ -99,7 +99,8 @@ void InitTask(void)
 	//serialTest(fd_serialport, FRAME_HEAD);
 
 	Init_AllPara(GAIT_WALK);
-	SCurveCtrlInit();
+	SCurveCtrl_Init();
+	PID_Init();
 	Calc_Position2Zero();
 	Calc_Body2Leg();
 	Modify_Posture();
