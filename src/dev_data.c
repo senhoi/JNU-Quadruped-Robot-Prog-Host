@@ -10,9 +10,15 @@ GyroFilter_t sGyroData_HighFreq;
 
 Gyro_t GyroData;
 
+uint8_t FootGrounding;
+
+void AnalysisFootGroundingData(serial_frame_t *pFrame)
+{
+	FootGrounding = *pFrame->pdata;
+}
+
 void AnalysisRemoteData(serial_frame_t *pFrame)
 {
-
 	RemoteData.Joystick_LX = (int8_t)pFrame->pdata[0];
 	RemoteData.Joystick_LY = (int8_t)pFrame->pdata[1];
 	RemoteData.Joystick_RX = (int8_t)pFrame->pdata[2];
@@ -105,6 +111,31 @@ void DispGyroData(void)
 	printf("Gyro_X:%f\t", GyroData.Gyro_X);
 	printf("Gyro_Y:%f\t", GyroData.Gyro_Y);
 	printf("Gyro_Z:%f\t", GyroData.Gyro_Z);
+	printf("\n");
+}
+
+void DispFootGroundingData(FootStatus_t FootGrounding)
+{
+	if (FootGrounding & 0x01)
+		printf("[LF]");
+	else
+		printf(" LF ");
+
+	if (FootGrounding & 0x02)
+		printf("[RH]");
+	else
+		printf(" RH ");
+
+	if (FootGrounding & 0x04)
+		printf("[RF]");
+	else
+		printf(" RF ");
+
+	if (FootGrounding & 0x08)
+		printf("[LH]");
+	else
+		printf(" LH ");
+
 	printf("\n");
 }
 

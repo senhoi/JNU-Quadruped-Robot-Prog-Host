@@ -49,15 +49,23 @@ typedef struct GyroFilter_t
 	Gyro_t FreshData;
 } GyroFilter_t;
 
+typedef uint8_t FootStatus_t;
+
 extern Remote_t RemoteData;
 extern Gyro_t GyroData;
 extern GyroFilter_t sGyroData_LowFreq;
 extern GyroFilter_t sGyroData_HighFreq;
 
+extern uint8_t FootGrounding;
+
+void AnalysisFootGroundingData(serial_frame_t *pFrame);
 void AnalysisRemoteData(serial_frame_t *pFrame);
 void AnalysisGyroData(serial_frame_t *pFrame, int filter);
+
 void DispRemoteData(void);
 void DispGyroData(void);
+void DispFootGroundingData(FootStatus_t FootGrounding);
+
 void CreateGyroLogFile(void);
 void WriteGyroLogFile(void);
 void SaveGyroLogFile(void);
