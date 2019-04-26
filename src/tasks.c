@@ -4,6 +4,7 @@
 #define FRAMETYPE_REMOTE 0x11
 #define FRAMETYPE_CAMERA 0x21
 #define FRAMETYPE_GYROSCOPE 0x22
+#define FRAMETYPE_FOOTGROUNDING 0x23
 
 Matrix_t sFootEndingPos;
 
@@ -123,7 +124,7 @@ void InterruptTask(void)
 	ParaUpdate(0);
 
 	Modify_COG();
-	Modify_Pitch(); //若陀螺仪数据未经滤波，一定不要调用此函数！！！
+	//Modify_Pitch(); //若陀螺仪数据未经滤波，一定不要调用此函数！！！
 	Modify_Posture();
 
 	switch (sRobot_MotionPara.Gait)
@@ -152,6 +153,7 @@ void InterruptTask(void)
 		JointAngle[i * 3 + 2] = buffer.pMatrix[2];
 		free(buffer.pMatrix);
 	}
+	Copy_FootEndingPos(sFootEndingPos);
 	free(sFootEndingPos.pMatrix);
 
 	serialSendFrameHead(fd_serialport, FRAME_HEAD);
@@ -166,6 +168,7 @@ void DisplayTask(void)
 {
 	DispRemoteData();
 	DispGyroData();
+	DispFootGroundingData(FootGrounding);
 }
 
 void RevTask(void)
@@ -175,6 +178,10 @@ void RevTask(void)
 	{
 		switch (sFrame.type)
 		{
+		case FRAMETYPE_FOOTGROUNDING:
+			AnalysisFootGroundingData(&sFrame);
+			break;
+
 		case FRAMETYPE_REMOTE:
 			AnalysisRemoteData(&sFrame);
 			break;

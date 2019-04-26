@@ -13,6 +13,17 @@
 #define ELBOW_ELBOW 0
 #define ELBOW_KNEE 1
 
+#define FOOT_STATUS_LF_UP 0x0E
+#define FOOT_STATUS_RH_UP 0x0D
+#define FOOT_STATUS_RF_UP 0x0B
+#define FOOT_STATUS_LH_UP 0x07
+#define FOOT_STATUS_ALL_DOWN 0x0F
+
+#define ABOVE_PLAIN 0x00 //接触点在理想平面上方
+#define DOWN_PLAIN 0x01  //接触点在理想平面下方
+#define OFF_PLAIN 0x02   //未接触地面
+#define FULL_PLAIN 0x03  //四足完全接触地面
+
 typedef struct Robot_MatrixGroup_t
 {
 	Matrix_t LF;

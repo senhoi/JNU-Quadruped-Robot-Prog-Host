@@ -188,10 +188,10 @@ static void SCurvePosCtrl_CycleLimited(SCurvePosCtrl_t *pSCurvePosCtrl)
 
 		if (pSCurvePosCtrl->AccTime >= 0 && pSCurvePosCtrl->DecTime >= 0 && pSCurvePosCtrl->MidTime >= 0 && coeff_b * coeff_b - 4.0f * coeff_a * coeff_c >= 0.0f)
 		{
-			printf("acc:%f dec:%f", pSCurvePosCtrl->Acc, pSCurvePosCtrl->Dec);
+			//printf("acc:%f dec:%f", pSCurvePosCtrl->Acc, pSCurvePosCtrl->Dec);
 			break;
 		}
-		printf("AccTime:%f DecTime:%f MidTime:%f det:%f acc:%f dec:%f\n", pSCurvePosCtrl->AccTime, pSCurvePosCtrl->DecTime, pSCurvePosCtrl->MidTime, coeff_b * coeff_b - 4.0f * coeff_a * coeff_c, pSCurvePosCtrl->Acc, pSCurvePosCtrl->Dec);
+		//printf("AccTime:%f DecTime:%f MidTime:%f det:%f acc:%f dec:%f\n", pSCurvePosCtrl->AccTime, pSCurvePosCtrl->DecTime, pSCurvePosCtrl->MidTime, coeff_b * coeff_b - 4.0f * coeff_a * coeff_c, pSCurvePosCtrl->Acc, pSCurvePosCtrl->Dec);
 	}
 }
 
