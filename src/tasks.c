@@ -153,7 +153,6 @@ void InterruptTask(void)
 		JointAngle[i * 3 + 2] = buffer.pMatrix[2];
 		free(buffer.pMatrix);
 	}
-	Copy_FootEndingPos(sFootEndingPos);
 	free(sFootEndingPos.pMatrix);
 
 	serialSendFrameHead(fd_serialport, FRAME_HEAD);

@@ -126,20 +126,20 @@ void Init_PlanePosturePara(void)
 
 void Init_InitialZeroShift(void)
 {
-	sRobot_InitialZeroShift.LF[0] = 120;
-	sRobot_InitialZeroShift.LH[0] = 100;
-	sRobot_InitialZeroShift.RF[0] = 120;
-	sRobot_InitialZeroShift.RH[0] = 100;
+	sRobot_InitialZeroShift.LF[0] = 0;
+	sRobot_InitialZeroShift.LH[0] = 0;
+	sRobot_InitialZeroShift.RF[0] = 0;
+	sRobot_InitialZeroShift.RH[0] = 0;
 
-	sRobot_InitialZeroShift.LF[1] = -80;
-	sRobot_InitialZeroShift.LH[1] = -80;
-	sRobot_InitialZeroShift.RF[1] = -80;
-	sRobot_InitialZeroShift.RH[1] = -80;
+	sRobot_InitialZeroShift.LF[1] = 0;
+	sRobot_InitialZeroShift.LH[1] = 0;
+	sRobot_InitialZeroShift.RF[1] = 0;
+	sRobot_InitialZeroShift.RH[1] = 0;
 
 	sRobot_InitialZeroShift.LF[2] = 0;
-	sRobot_InitialZeroShift.LH[2] = 0;
+	sRobot_InitialZeroShift.LH[2] = 20;
 	sRobot_InitialZeroShift.RF[2] = 0;
-	sRobot_InitialZeroShift.RH[2] = 0;
+	sRobot_InitialZeroShift.RH[2] = 20;
 }
 
 void Init_ZeroShift(void)
